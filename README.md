@@ -1,8 +1,8 @@
-# Mind Reader Rock Paper SCissors ✂️🪨📄
+# Mind Reader ✂️🪨📄
 
 A rock paper scissors game that learns how you play. Built first as a command-line game in Python, then rebuilt as a web page you can play in your browser. This is part of my ongoing journey to strengthen my programming fundamentals by building real, working projects.
 
-🎮 Play it here: https://zainabtoyin.github.io/rock-paper-scissors/
+🎮 **Play it here:** https://zainabtoyin.github.io/rock-paper-scissors/
 
 ## 🧠 Why This Project Is Different
 
@@ -54,7 +54,7 @@ python3 python/main.py
 ## 📂 Project Structure
 
 ```
-Rock_Paper_Scissors/
+rock-paper-scissors/
 ├── index.html       # Web version: page structure
 ├── style.css        # Web version: design
 ├── brain.js         # Web version: rules and the AI
@@ -72,8 +72,7 @@ Rock_Paper_Scissors/
 * Add sound effects
 * Add a "best of" scoreboard across matches
 
-## 👩🏾‍💻 Author
+## 👩🏾‍💻 Authors
 
-Zainab Toyin: Learning to code, one project at a time [LinkedIn](https://www.linkedin.com/in/zainabtoyin)
-
-Hamdalat Akinwande
+* Zainab Toyin: Learning to code, one project at a time [LinkedIn](https://www.linkedin.com/in/zainabtoyin)
+* Hamdalat Akinwande
