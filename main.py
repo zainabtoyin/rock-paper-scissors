@@ -1,9 +1,3 @@
-"""Mind Reader: rock paper scissors against a computer that learns how you play.
-
-After every round it updates two memories: how often you throw each move,
-and what you tend to throw after each (move, result). It then plays whatever
-beats the move it expects from you.
-"""
 import random
 import sys
 import time

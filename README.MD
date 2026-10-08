@@ -1,4 +1,4 @@
-# Mind Reader ✂️🪨📄
+# Mind Reader Rock Paper SCissors ✂️🪨📄
 
 A rock paper scissors game that learns how you play. Built first as a command-line game in Python, then rebuilt as a web page you can play in your browser. This is part of my ongoing journey to strengthen my programming fundamentals by building real, working projects.
 
