@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mind Reader | Rock Paper Scissors that learns you</title>
+  <meta name="description" content="A rock paper scissors game where the computer studies your habits and tries to predict your next move.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- The three moves, drawn once and reused everywhere with <use> -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="s-rock" viewBox="0 0 120 120">
+      <polygon points="18,78 30,44 58,24 92,32 106,62 98,94 62,104 30,100" style="fill:var(--rock)"/>
+      <polyline points="30,44 62,60 92,32" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="3" stroke-linejoin="round"/>
+      <polyline points="62,60 62,104" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="3"/>
+      <polyline points="18,78 62,60 106,62" fill="none" stroke="#000" stroke-opacity=".16" stroke-width="3" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="s-paper" viewBox="0 0 120 120">
+      <path d="M28 12 H78 L98 32 V108 H28 Z" style="fill:var(--sheet)"/>
+      <path d="M78 12 V32 H98 Z" fill="#000" fill-opacity=".25"/>
+      <rect x="40" y="50" width="46" height="5" rx="2.5" fill="#fff" fill-opacity=".6"/>
+      <rect x="40" y="64" width="46" height="5" rx="2.5" fill="#fff" fill-opacity=".6"/>
+      <rect x="40" y="78" width="30" height="5" rx="2.5" fill="#fff" fill-opacity=".6"/>
+    </symbol>
+    <symbol id="s-scissors" viewBox="0 0 120 120">
+      <g style="stroke:var(--blade)" stroke-linecap="round" fill="none">
+        <line x1="32" y1="12" x2="82" y2="84" stroke-width="11"/>
+        <line x1="88" y1="12" x2="38" y2="84" stroke-width="11"/>
+        <circle cx="84" cy="98" r="12" stroke-width="7"/>
+        <circle cx="36" cy="98" r="12" stroke-width="7"/>
+      </g>
+      <circle cx="60" cy="48" r="4.5" fill="#fff"/>
+    </symbol>
+    <symbol id="s-hidden" viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="44" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="3 9" stroke-linecap="round"/>
+      <text x="60" y="76" text-anchor="middle" font-size="46" font-weight="700" fill="currentColor" style="font-family:var(--display)">?</text>
+    </symbol>
+  </svg>
+
+  <main class="app">
+
+    <header class="top">
+      <div class="title">
+        <h1>Mind Reader</h1>
+        <p class="lede">Rock paper scissors against a computer that learns how you play. First to 5 wins.</p>
+      </div>
+
+      <div class="scoreboard" aria-label="Score">
+        <div class="side">
+          <span class="who">You</span>
+          <span class="pips" id="pipsYou"></span>
+        </div>
+        <div class="side">
+          <span class="who">Mind Reader</span>
+          <span class="pips" id="pipsAi"></span>
+        </div>
+      </div>
+    </header>
+
+    <section class="play" aria-label="Game">
+      <div class="arena">
+        <figure class="stage" id="stageYou">
+          <svg class="shape" viewBox="0 0 120 120" aria-hidden="true"><use href="#s-hidden"/></svg>
+          <figcaption><span class="who">You</span> <span class="moveName" id="nameYou">Pick a move</span></figcaption>
+        </figure>
+        <figure class="stage" id="stageAi">
+          <svg class="shape" viewBox="0 0 120 120" aria-hidden="true"><use href="#s-hidden"/></svg>
+          <figcaption><span class="who">Mind Reader</span> <span class="moveName" id="nameAi">Waiting</span></figcaption>
+        </figure>
+      </div>
+
+      <div class="readout" role="status" aria-live="polite">
+        <p class="status" id="status">Choose rock, paper or scissors.</p>
+        <p class="note" id="note">Press R, P or S on your keyboard, or tap a button.</p>
+      </div>
+
+      <div class="controls">
+        <button class="move" data-move="rock" type="button">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#s-rock"/></svg>
+          <span class="label">Rock</span><kbd>R</kbd>
+        </button>
+        <button class="move" data-move="paper" type="button">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#s-paper"/></svg>
+          <span class="label">Paper</span><kbd>P</kbd>
+        </button>
+        <button class="move" data-move="scissors" type="button">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><use href="#s-scissors"/></svg>
+          <span class="label">Scissors</span><kbd>S</kbd>
+        </button>
+      </div>
+    </section>
+
+    <aside class="tape" aria-label="What the computer has learned about you">
+      <h2>What it thinks of you</h2>
+      <p class="tape-intro">Each line shows how likely the computer thought you were to throw that move before the round. A solid dot means it called your move. A hollow dot means it missed.</p>
+
+      <div class="chart-wrap">
+        <svg id="chart" viewBox="0 0 360 210" role="img" aria-label="Chart of the computer's predictions over time"></svg>
+        <p class="empty" id="chartEmpty">Play a round and the computer starts drawing its read of you here.</p>
+      </div>
+
+      <ul class="legend">
+        <li><i class="swatch rock"></i>Rock</li>
+        <li><i class="swatch paper"></i>Paper</li>
+        <li><i class="swatch scissors"></i>Scissors</li>
+      </ul>
+
+      <div class="meter">
+        <div class="meter-head">
+          <span>Predictability</span>
+          <strong id="meterPct">No reads yet</strong>
+        </div>
+        <div class="meter-bar"><div id="meterFill"></div></div>
+        <p class="meter-sub" id="meterSub">The higher this goes, the easier you are to read.</p>
+      </div>
+
+      <div class="memory">
+        <p>It remembers your habits between visits on this device.</p>
+        <button type="button" class="ghost" id="forget">Reset what it knows</button>
+      </div>
+    </aside>
+
+  </main>
+
+  <dialog id="result" aria-labelledby="resultTitle">
+    <h2 id="resultTitle"></h2>
+    <p class="result-score" id="resultScore"></p>
+    <dl class="result-stats">
+      <div><dt>Predictability</dt><dd id="resultPred"></dd></div>
+      <div><dt>Your favorite move</dt><dd id="resultFav"></dd></div>
+    </dl>
+    <p class="verdict" id="resultVerdict"></p>
+    <button type="button" class="primary" id="again">Play again</button>
+  </dialog>
+
+  <script src="brain.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
